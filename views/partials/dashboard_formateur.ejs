@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+    <link rel="icon" href="/images/LearnUp.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        // JavaScript to toggle the sidebar and shift the main content
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+
+            sidebar.classList.toggle("-translate-x-full");
+            mainContent.classList.toggle("lg:ml-64");
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-md px-6 py-4 fixed top-0 left-0 w-full z-50">
+    <div class="container mx-auto flex justify-between items-center">
+        <!-- Hamburger Menu -->
+        <button onclick="toggleSidebar()" class="text-gray-800 hover:text-orange-500">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+        <p class="text-lg font-semibold text-gray-900">
+            Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
+        </p>
+        <div class="flex items-center space-x-6">
+            <button class="relative text-gray-800 hover:text-orange-500">
+                <i class="fas fa-bell text-2xl"></i>
+                <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+            </button>
+            <a href="/logout" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-lg transition-all">
+                Se déconnecter
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Layout -->
+<div class="flex">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white min-h-screen fixed transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="p-6 border-b border-gray-700 mt-16">
+            <h2 class="text-2xl font-bold text-gray-100">Menu</h2>
+        </div>
+        <ul class="space-y-1 mt-2">
+            <li>
+                <a href="/formateur/dashboard" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-tachometer-alt mr-3"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/formateurs/formations" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-book mr-3"></i>
+                    Mes Sessions de formation
+                </a>
+            </li>
+            <li>
+                <a href="/visios" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-video mr-3"></i>
+                    Visio-conférences
+                </a>
+            </li>
+            
+            <li>
+                <a href="/devoirs" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-file-alt mr-3"></i>
+                    Ressources
+                </a>
+            </li>
+            <li>
+                <a href="/examens" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-edit mr-3"></i>
+                    Examens
+                </a>
+            </li>
+            <li>
+                <a href="/notifications" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-bell mr-3"></i>
+                    Quiz
+                </a>
+            </li>
+            <li>
+                <a href="/certificats" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-certificate mr-3"></i>
+                    Devoirs
+                </a>
+            </li>
+            <li>
+                <a href="/certificats" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-certificate mr-3"></i>
+                    Forum
+                </a>
+            </li>
+            <li>
+                <a href="/parametres" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-cogs mr-3"></i>
+                    Paramètres
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">

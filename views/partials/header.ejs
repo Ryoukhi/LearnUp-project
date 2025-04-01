@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnUp</title>
+    <link rel="icon" href="/images/LearnUp.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-md py-4 px-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="flex items-center text-black-500 text-2xl font-bold">
+                <img src="/images/LearnUp.png" alt="LearnUp Logo" class="w-12 h-auto mr-2">
+                <span>Learn<span class="text-orange-500">Up</span></span>
+            </a>
+            <button id="menu-btn" class="lg:hidden text-orange-500 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <ul class="hidden lg:flex space-x-6 text-gray-700">
+                <li><a href="/" class="hover:text-orange-500">Accueil</a></li>
+               
+                <li><a href="/about" class="hover:text-orange-500">À propos</a></li>
+                <li><a href="/contact" class="hover:text-orange-500">Contact</a></li>
+                <li><a href="/login" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">Connexion</a></li>
+                <li><a href="/register" class="bg-gray-200 text-orange-500 px-4 py-2 rounded-lg hover:bg-gray-300">S'inscrire</a></li>
+            </ul>
+        </div>
+        <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-md">
+            <ul class="text-center py-4 space-y-4 text-gray-700">
+                <li><a href="/" class="block hover:text-orange-500">Accueil</a></li>
+                <li><a href="/courses" class="block hover:text-orange-500">Cours</a></li>
+                <li><a href="/about" class="block hover:text-orange-500">À propos</a></li>
+                <li><a href="/contact" class="block hover:text-orange-500">Contact</a></li>
+                <li><a href="/login" class="block bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">Connexion</a></li>
+                <li><a href="/register" class="block bg-gray-200 text-orange-500 px-4 py-2 rounded-lg hover:bg-gray-300">S'inscrire</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    

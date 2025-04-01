@@ -1,0 +1,116 @@
+<%- include("../partials/dashboard_admin.ejs") %>
+<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">
+<div class="container mx-auto p-6">
+  <!-- Ajouter un Formateur Card -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-8 pt-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Ajouter un Formateur</h2>
+    <form action="/admin/creer-formateur" method="POST" class="space-y-4">
+      
+      
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+          <input type="text" id="nom" name="nom" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+        </div>
+        <div>
+          <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+          <input type="text" id="prenom" name="prenom" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" id="email" name="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+        </div>
+        <div>
+          <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+          <input type="text" id="telephone" name="telephone" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Mot de Passe</label>
+          <input type="password" id="password" name="motDePasse" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+        </div>
+      </div>
+     
+      <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+        Ajouter Formateur
+      </button>
+    </form>
+  </div>
+
+  <!-- Table of Formateurs -->
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Liste des Formateurs</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prénom</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telephone</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% formateurs.forEach(formateur => { %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= formateur.nom %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= formateur.prenom %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= formateur.email %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= formateur.telephone %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <!-- Modifier Button -->
+                <a href="#" class="text-blue-600 hover:text-blue-900 mr-4" onclick="openModal('<%= formateur.id %>', '<%= formateur.nom %>', '<%= formateur.prenom %>', '<%= formateur.email %>', '<%= formateur.telephone %>')">Modifier</a>
+
+                <!-- Modal -->
+                <div id="modal-<%= formateur.id %>" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+                  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                    <h2 class="text-xl font-bold mb-4">Modifier Formateur</h2>
+                    <form action="/admin/modifier-formateur/<%= formateur.id %>" method="POST" class="space-y-4">
+                      <div>
+                        <label for="nom-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Nom</label>
+                        <input type="text" id="nom-<%= formateur.id %>" name="nom" value="<%= formateur.nom %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                      </div>
+                      <div>
+                        <label for="prenom-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Prénom</label>
+                        <input type="text" id="prenom-<%= formateur.id %>" name="prenom" value="<%= formateur.prenom %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                      </div>
+                      <div>
+                        <label for="email-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email-<%= formateur.id %>" name="email" value="<%= formateur.email %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                      </div>
+                      <div>
+                        <label for="telephone-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <input type="text" id="telephone-<%= formateur.id %>" name="telephone" value="<%= formateur.telephone %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                      </div>
+                      <div class="flex justify-end space-x-4">
+                        <button type="button" onclick="closeModal('<%= formateur.id %>')" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg">Annuler</button>
+                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg">Enregistrer</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <script>
+                  function openModal(id, nom, prenom, email, telephone) {
+                    document.getElementById(`modal-${id}`).classList.remove('hidden');
+                  }
+
+                  function closeModal(id) {
+                    document.getElementById(`modal-${id}`).classList.add('hidden');
+                  }
+                </script>
+                <form action="/admin/supprimer-formateur/<%= formateur.id %>" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce formateur ?');">
+  <button type="submit" class="text-red-600 hover:text-red-900">Supprimer</button>
+</form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</main>
+
+<%- include("../partials/footer-dash.ejs") %>

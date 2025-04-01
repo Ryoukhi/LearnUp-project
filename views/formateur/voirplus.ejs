@@ -1,0 +1,103 @@
+<%- include("../partials/dashboard_formateur.ejs") %>
+
+<!-- Include Quill.js -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+<div class="container mx-auto p-6">
+    <div class="bg-white shadow-lg rounded-lg p-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Détails de la Formation</h2>
+        <div class="space-y-4">
+            <p class="text-lg"><strong class="font-semibold text-gray-700">Titre :</strong> <%= formation.titre %></p>
+            <p class="text-lg"><strong class="font-semibold text-gray-700">Description :</strong></p>
+            <div class="prose max-w-none text-gray-600">
+                <%- formation.description %>
+            </div>
+            <p class="text-lg"><strong class="font-semibold text-gray-700">Date de Début :</strong> <%= formation.dateDebut.toLocaleDateString() %></p>
+            <p class="text-lg"><strong class="font-semibold text-gray-700">Date de Fin :</strong> <%= formation.dateFin.toLocaleDateString() %></p>
+            <p class="text-lg"><strong class="font-semibold text-gray-700">Prix :</strong> <%= formation.montant %> FCFA</p>
+            <p class="text-lg"><strong class="font-semibold text-gray-700">Etat :</strong> <%= formation.etat %></p>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4 mt-8">
+        <button id="updateButton" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all">
+            Modifier
+        </button>
+        <form action="/formateur/formations/session/supprimer-session/<%= formation.id %>" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette formation ?');">
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all">
+                Supprimer
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div id="updateModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden overflow-auto">
+    <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Modifier la Formation</h2>
+        <form action="/formateur/modifier-session/<%= formation.id %>" method="POST" class="space-y-6">
+            <div>
+                <label for="titre" class="block text-sm font-medium text-gray-700">Titre</label>
+                <input type="text" id="titre" name="titre" value="<%= formation.titre %>" required class="input-field">
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <input type="hidden" id="description" name="description" value="<%- formation.description %>">
+                <div id="editor" class="editor-container">
+                    <%- formation.description %>
+                </div>
+            </div>
+            <div>
+                <label for="dateDebut" class="block text-sm font-medium text-gray-700">Date de Début</label>
+                <input type="date" id="dateDebut" name="dateDebut" value="<%= formation.dateDebut.toISOString().split('T')[0] %>" required class="input-field">
+            </div>
+            <div>
+                <label for="dateFin" class="block text-sm font-medium text-gray-700">Date de Fin</label>
+                <input type="date" id="dateFin" name="dateFin" value="<%= formation.dateFin.toISOString().split('T')[0] %>" required class="input-field">
+            </div>
+            <div>
+                <label for="montant" class="block text-sm font-medium text-gray-700">Prix (en FCFA)</label>
+                <input type="number" id="montant" name="montant" value="<%= formation.montant %>" required class="input-field">
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all">
+                    Enregistrer les Modifications
+                </button>
+            </div>
+        </form>
+        <button id="closeModal" class="mt-6 text-gray-600 hover:text-gray-800">Annuler</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById("updateButton").addEventListener("click", () => {
+        document.getElementById("updateModal").classList.remove("hidden");
+    });
+    
+    document.getElementById("closeModal").addEventListener("click", () => {
+        document.getElementById("updateModal").classList.add("hidden");
+    });
+    
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        placeholder: 'Décrivez la session en détail...',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link', 'image'],
+                ['clean']
+            ]
+        }
+    });
+    
+    const descriptionInput = document.getElementById('description');
+    quill.on('text-change', () => {
+        descriptionInput.value = quill.root.innerHTML;
+    });
+</script>
+
+<%- include("../partials/footer-dash.ejs") %>

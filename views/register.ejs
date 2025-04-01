@@ -1,0 +1,65 @@
+<%- include("partials/header.ejs") %>
+
+
+<section class="bg-gray-100 text-gray-900 py-16 px-6">
+  <div class="container mx-auto text-center">
+      <h2 class="text-4xl font-bold text-gray-900">Inscrivez-vous pour commencer à apprendre</h2>
+      <p class="text-gray-600 mt-4 text-lg">Créez un compte et accédez à des cours de qualité, à votre rythme.</p>
+  </div>
+  
+  <div class="container mx-auto mt-12 max-w-lg bg-white p-8 rounded-lg shadow-lg">
+      <form action="/register" method="POST">
+          <div class="grid grid-cols-1 gap-6">
+              <!-- Nom -->
+              <div>
+                  <label for="first-name" class="block text-gray-700 font-semibold">Nom</label>
+                  <input type="text" id="first-name" name="nom" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Votre nom" required>
+              </div>
+
+              <!-- Prénom -->
+              <div>
+                  <label for="last-name" class="block text-gray-700 font-semibold">Prénom</label>
+                  <input type="text" id="last-name" name="prenom" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Votre prénom" required>
+              </div>
+
+              <!-- Email -->
+              <div>
+                  <label for="email" class="block text-gray-700 font-semibold">Email</label>
+                  <input type="email" id="email" name="email" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Votre email" required>
+              </div>
+
+              <!-- Téléphone -->
+              <div>
+                  <label for="phone" class="block text-gray-700 font-semibold">Téléphone</label>
+                  <input type="tel" id="phone" name="telephone" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Votre téléphone" required>
+              </div>
+
+              <!-- Mot de passe -->
+              <div>
+                  <label for="password" class="block text-gray-700 font-semibold">Mot de passe</label>
+                  <input type="password" id="password" name="motDePasse" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Votre mot de passe" required>
+              </div>
+
+              <!-- Confirmation du mot de passe 
+              <div>
+                  <label for="confirm-password" class="block text-gray-700 font-semibold">Confirmer le mot de passe</label>
+                  <input type="password" id="confirm-motDepasse" name="confirm-password" class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Confirmez votre mot de passe" required>
+              </div>-->
+
+              <!-- Bouton d'inscription -->
+              <div>
+                  <button type="submit" class="w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition-all">S'inscrire</button>
+              </div>
+          </div>
+      </form>
+  </div>
+</section>
+
+
+
+<%- include("partials/footer.ejs") %>
+
+
+
+
+
