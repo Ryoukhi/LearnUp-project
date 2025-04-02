@@ -1,6 +1,9 @@
 <%- include("../partials/dashboard_admin.ejs") %>
 <!-- Main Content -->
-<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">
+<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300 pt-20">
+    <h3 class="text-lg font-semibold text-gray-900">
+        Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
+    </h3>
     <h1 class="text-4xl font-bold text-gray-900 mb-6">Tableau de Bord</h1>
     <div class="bg-white shadow-md rounded-lg p-6">
         <p class="text-gray-700 text-lg">

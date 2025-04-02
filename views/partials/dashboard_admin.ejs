@@ -28,9 +28,7 @@
         <button onclick="toggleSidebar()" class="text-gray-800 hover:text-orange-500">
             <i class="fas fa-bars text-2xl"></i>
         </button>
-        <p class="text-lg font-semibold text-gray-900">
-            Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
-        </p>
+        
         <div class="flex items-center space-x-6">
             <button class="relative text-gray-800 hover:text-orange-500">
                 <i class="fas fa-bell text-2xl"></i>
@@ -58,7 +56,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="/admin/sessions" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-book mr-3"></i>
                     Gérer les Formations
                 </a>
@@ -111,3 +109,4 @@
     </aside>
 
     <main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300"> 
+        

@@ -178,3 +178,181 @@ exports.afficherFormation = async (req, res) => {
   }
 };
 
+exports.listerSessionsFermees = async (req, res) => {
+  try {
+    // Fetch all training sessions where etat is "fermee" with associated trainer details
+    const sessions = await SessionFormation.findAll({
+      where: { etat: "fermee" }, // Filter sessions by etat = "fermee"
+      include: [
+        {
+          model: User,
+          as: "formateur",
+          attributes: ["nom", "prenom", "telephone", "email"], // Include trainer details
+        },
+      ],
+    });
+
+    // Render the EJS template with the fetched data
+    res.render("admin/traitementsession", { user: req.user, sessions });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des formations :", error);
+    res.status(500).send("Une erreur est survenue.");
+  }
+};
+
+exports.listerSessionsOuvertes = async (req, res) => {
+  try {
+    // Fetch all training sessions where etat is "fermee" with associated trainer details
+    const sessions = await SessionFormation.findAll({
+      where: { etat: "ouverte" }, // Filter sessions by etat = "fermee"
+      include: [
+        {
+          model: User,
+          as: "formateur",
+          attributes: ["nom", "prenom", "telephone", "email"], // Include trainer details
+        },
+      ],
+    });
+
+    // Render the EJS template with the fetched data
+    res.render("admin/gestion_formation", { user: req.user, sessions });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des formations :", error);
+    res.status(500).send("Une erreur est survenue.");
+  }
+};
+
+exports.modifierEtatSession = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { etat } = req.body;
+
+    const session = await SessionFormation.findByPk(id);
+
+    if (!session) {
+      req.flash("error", "Session introuvable.");
+      return res.redirect("/admin/sessions/sessions-fermees");
+    }
+
+    // Update the session's etat
+    session.etat = etat;
+    await session.save();
+
+    req.flash("success", "L'état de la session a été modifié avec succès !");
+    res.redirect(`/admin/sessions/sessions-fermees`);
+  } catch (error) {
+    console.error("Erreur lors de la modification de l'état de la session :", error);
+    req.flash("error", "Une erreur est survenue lors de la modification de l'état.");
+    res.redirect(`/admin/sessions/sessions-fermees/etatsession/${id}`);
+  }
+};
+
+exports.afficherSessionFermee = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Récupérer la session par ID et s'assurer qu'elle est fermée (etat = 'fermee')
+    const session = await SessionFormation.findOne({
+      where: { id, etat: "fermee" },
+      include: [
+        {
+          model: User,
+          as: "formateur",
+          attributes: ["nom", "prenom", "telephone", "email"], // Inclure les coordonnées du formateur
+        },
+      ],
+    });
+
+    if (!session) {
+      req.flash("error", "Session fermée introuvable.");
+      return res.redirect("/admin/sessions/sessions-fermees");
+    }
+
+    // Render the EJS template with the session details
+    res.render("admin/etatsession", { user: req.user, session });
+  } catch (error) {
+    console.error("Erreur lors de l'affichage de la session fermée :", error);
+    req.flash("error", "Une erreur est survenue lors de l'affichage de la session.");
+    res.redirect("/admin/sessions/sessions-fermees");
+  }
+};
+
+exports.afficherSessionOuverte = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Récupérer la session par ID et s'assurer qu'elle est fermée (etat = 'fermee')
+    const session = await SessionFormation.findOne({
+      where: { id, etat: "ouverte" },
+      include: [
+        {
+          model: User,
+          as: "formateur",
+          attributes: ["nom", "prenom", "telephone", "email"], // Inclure les coordonnées du formateur
+        },
+      ],
+    });
+
+    if (!session) {
+      req.flash("error", "Session introuvable.");
+      return res.redirect("/admin/sessions");
+    }
+
+    // Render the EJS template with the session details
+    res.render("admin/etatsession", { user: req.user, session });
+  } catch (error) {
+    console.error("Erreur lors de l'affichage de la session fermée :", error);
+    req.flash("error", "Une erreur est survenue lors de l'affichage de la session.");
+    res.redirect("/admin/sessions/sessions-fermees");
+  }
+};
+
+exports.listerCatalogue = async (req, res) => {
+  try {
+    const sessions = await SessionFormation.findAll({
+      where: { etat: "ouverte" },
+      include: [
+        {
+          model: User,
+          as: "formateur",
+          attributes: ["nom", "prenom"], // Include trainer details if needed
+        },
+      ],
+    });
+
+    res.render("student/catalogue", { user: req.user, sessions });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des sessions ouvertes :", error);
+    res.status(500).send("Une erreur est survenue.");
+  }
+};
+
+exports.afficherContenuFormation = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the session by ID
+    const session = await SessionFormation.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          as: "formateur",
+          attributes: ["nom", "prenom", "telephone", "email"], // Include trainer details
+        },
+      ],
+    });
+
+    if (!session) {
+      req.flash("error", "Session introuvable.");
+      return res.redirect("/student/catalogue");
+    }
+
+    // Render the EJS template with the session details
+    res.render("student/contenu_formation", { user: req.user, session });
+  } catch (error) {
+    console.error("Erreur lors de l'affichage du contenu de la formation :", error);
+    req.flash("error", "Une erreur est survenue lors de l'affichage de la formation.");
+    res.redirect("/student/catalogue");
+  }
+};

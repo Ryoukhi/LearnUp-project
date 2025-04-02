@@ -1,0 +1,45 @@
+<%- include("../partials/dashboard_admin.ejs") %>
+
+<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300 pt-20">
+<div class="container mx-auto p-6">
+  <div class="bg-white shadow-lg rounded-lg p-8">
+    <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Détails de la Session</h2>
+    <div class="space-y-4">
+      <p class="text-lg"><strong class="font-semibold text-gray-700">Titre :</strong> <%= session.titre %></p>
+      <p class="text-lg"><strong class="font-semibold text-gray-700">Description :</strong></p>
+      <div class="prose max-w-none text-gray-600">
+        <%- session.description %>
+      </div>
+      <p class="text-lg"><strong class="font-semibold text-gray-700">Date de Début :</strong> <%= session.dateDebut.toLocaleDateString() %></p>
+      <p class="text-lg"><strong class="font-semibold text-gray-700">Date de Fin :</strong> <%= session.dateFin.toLocaleDateString() %></p>
+      <p class="text-lg"><strong class="font-semibold text-gray-700">Prix :</strong> <%= session.montant %> FCFA</p>
+      <p class="text-lg"><strong class="font-semibold text-gray-700">État :</strong> <%= session.etat === "ouverte" ? "Ouverte" : "Fermée" %></p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4 mt-6">
+      <!-- Modify Etat -->
+      <form action="/admin/sessions/sessions-fermees/etatsession/<%= encodeURIComponent(session.id) %>" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir modifier l\'état de cette session ?');">
+        <input type="hidden" name="etat" value="<%= session.etat === 'ouverte' ? 'fermee' : 'ouverte' %>">
+        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+          Modifier l'État
+        </button>
+      </form>
+
+      <!-- Delete Session -->
+      <form action="/formateur/formations/session/supprimer-session/<%= encodeURIComponent(session.id) %>" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session ?');">
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+          Supprimer
+        </button>
+      </form>
+
+      <!-- Terminer Button -->
+      <a href="/admin/sessions/sessions-fermees" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+        Terminer
+      </a>
+    </div>
+  </div>
+</div>
+</main>
+
+<%- include("../partials/footer-dash.ejs") %>
