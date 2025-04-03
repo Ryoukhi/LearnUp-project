@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
     dateFin: DataTypes.DATE,
     idFormateur: DataTypes.INTEGER,
     montant: DataTypes.FLOAT,
-    etat: DataTypes.ENUM("ouverte", "fermee"),
+    
   }, {
     sequelize,
     modelName: 'SessionFormation',

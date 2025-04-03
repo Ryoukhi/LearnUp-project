@@ -1,42 +1,40 @@
 <%- include("../partials/dashboard_admin.ejs") %>
-
-<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300 pt-20">
+<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">
 <div class="container mx-auto p-6">
-  <!-- Bouton pour afficher les sessions en attente -->
-  <div class="flex justify-end mb-6">
-    <a href="/admin/sessions/sessions-fermees" class="bg-orange-400 text-white hover:bg-orange-600 font-semibold py-2 px-4 rounded-lg shadow-md transition-all flex items-center">
-      <i class="fas fa-book mr-2"></i> Sessions en Attente
+  <!-- Header Section -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Gestion des Formations</h2>
+
+    <a href="/admin/ajouter-session" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+      Créer une Nouvelle Session de Formation
     </a>
   </div>
-  <!-- Sessions disponibles -->
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Sessions Disponibles</h2>
 
-  <% if (sessions && sessions.length > 0) { %>
+  <!-- List of Formations -->
+  <% if (formations && formations.length > 0) { %>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% sessions.forEach(session => { %>
-        <% if (session.etat === 'ouverte') { %>
-          <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-gray-800 mb-2"><%= session.titre %></h3>
-              <p class="text-sm text-gray-600 mb-4 line-clamp-3"><%= session.description.replace(/(<([^>]+)>)/gi, "").substring(0, 200) %>...</p>
-              <div class="text-sm text-gray-600 mb-4">
-                <p><strong>Date de Début :</strong> <%= session.dateDebut.toLocaleDateString() %></p>
-                <p><strong>Date de Fin :</strong> <%= session.dateFin.toLocaleDateString() %></p>
-                <p><strong>Prix :</strong> <span class="text-green-600 font-bold"><%= session.montant %> FCFA</span></p>
-                <p><strong>Formateur :</strong> <%= session.formateur.nom %> <%= session.formateur.prenom %></p>
-                <p><strong>Telephone:</strong> <%= session.formateur.telephone %>   </p>
-                <p><strong>Email:</strong> <%= session.formateur.email %></p>
-              </div>
-              <a href="/admin/sessions/etatsession/<%= encodeURIComponent(session.id) %>" class="block text-center bg-orange-600 text-white hover:bg-orange-500 font-medium py-2 px-4 rounded-lg transition-all">
-                Voir les détails
-              </a>
+      <% formations.forEach(formation => { %>
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full transform hover:scale-105">
+          <div class="p-6 flex-grow">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2"><%= formation.titre %></h3>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-3"><%= formation.description.replace(/(<([^>]+)>)/gi, "").substring(0, 200) %>...</p>
+            <div class="text-sm text-gray-600 mb-4">
+              <p><strong>Date de Début :</strong> <%= formation.dateDebut.toLocaleDateString() %></p>
+              <p><strong>Date de Fin :</strong> <%= formation.dateFin.toLocaleDateString() %></p>
+              <p><strong>Prix :</strong> <span class="text-green-600 font-bold"><%= formation.montant %> FCFA</span></p>
+              <p><strong>Formateur :</strong> <%= formation.formateur.nom %> <%= formation.formateur.prenom %></p>
             </div>
           </div>
-        <% } %>
+          <div class="p-4 bg-gray-100 flex justify-center items-center">
+            <a href="/admin/sessions/<%= encodeURIComponent(formation.id) %>" class="block text-center bg-orange-600 text-white hover:bg-orange-500 font-medium py-2 px-4 rounded-lg transition-all transform hover:scale-105 w-full">
+              Voir les Détails
+            </a>
+          </div>
+        </div>
       <% }) %>
     </div>
   <% } else { %>
-    <p class="text-gray-600">Aucune session fermée disponible.</p>
+    <p class="text-gray-600">Aucune formation disponible pour le moment.</p>
   <% } %>
 </div>
 </main>
