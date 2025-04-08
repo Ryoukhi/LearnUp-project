@@ -1,24 +1,47 @@
-const express = require("express");
-const { creerFormateur, listerFormateurs, modifierFormateur, supprimerFormateur,getFormateur } = require("../controllers/FormateurController");
+const express = require('express');
+const router = express.Router();
+const { afficherFormationsEnCoursFormateur, afficherFormationsEnAttenteFormateur,afficherFormationsTermineesFormateur, afficherDetailsSessionEnCours, afficherDetailsSessionEnAttente, completeVideoconference } = require('../controllers/sessionFormationController');
 const {ensureAuthenticated} = require("../middlewares/ensureAuthenticated");
 const {checkRole} = require("../middlewares/roleMiddleware");
-
-const router = express.Router();
-
-// Route to create a new formateur
-router.post("/admin/creer-formateur",ensureAuthenticated,checkRole(["admin"]), creerFormateur);
+const { SuivieCours } = require('../models');
 
 
+// Dashboard route
+router.get('/dashboard', ensureAuthenticated, checkRole(['formateur']), (req, res) => {
+  res.render('formateur/dashboard', { user: req.user });
+});
 
-// Route to list all formateurs
-router.get("/admin/formateurs",ensureAuthenticated,checkRole(["admin"]), listerFormateurs);
+// Ongoing training sessions
+router.get('/formations-en-cours', ensureAuthenticated, checkRole(['formateur']), afficherFormationsEnCoursFormateur);
 
-// Route to modify a formateur
-router.post("/admin/modifier-formateur/:id",ensureAuthenticated,checkRole(["admin"]), modifierFormateur);
+// Pending training sessions
+router.get('/formations-en-attente', 
+  ensureAuthenticated, checkRole(['formateur']), afficherFormationsEnAttenteFormateur
+);
 
-router.post("/admin/supprimer-formateur/:id",ensureAuthenticated,checkRole(["admin"]), supprimerFormateur);
+// Pending training sessions
+router.get('/formations-terminees', 
+    ensureAuthenticated, checkRole(['formateur']), afficherFormationsTermineesFormateur
+  );
 
-router.get("/formateur/:id",ensureAuthenticated,checkRole(["admin"]), getFormateur);
+
+
+// Session en cours details
+router.get('/formations-en-cours/:id', ensureAuthenticated, checkRole(['formateur']), afficherDetailsSessionEnCours);
+
+
+// Session en attente details
+router.get('/formations-en-attente/:id', ensureAuthenticated, checkRole(['formateur']), afficherDetailsSessionEnAttente);
+
+
+
+// Mark videoconference as completed
+router.post('/videoconference/:id/complete', 
+  ensureAuthenticated, 
+  checkRole(['formateur']), 
+  completeVideoconference
+);
+
 
 
 

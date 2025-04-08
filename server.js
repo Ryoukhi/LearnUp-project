@@ -2,7 +2,8 @@ const express = require("express");
 const flash = require("connect-flash");
 const session = require("express-session");
 //const passport = require("passport");
-const passport = require("./config/passport"); 
+const passport = require("./config/passport");
+
 const { sequelize } = require("./models");
 require("dotenv").config();
 const path = require("path");
@@ -36,6 +37,7 @@ app.use(session({
 app.use(flash());
 // Middleware pour rendre les messages accessibles dans les vues
 app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
     res.locals.error = req.flash("error");
     next();
   });
@@ -46,12 +48,21 @@ app.use(passport.session());
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
-const sessionFormation = require("./routes/sessionFormationRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const formateurRoutes = require("./routes/FormateurRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+
+
+
+
+// ... (other middleware and route setup)
 
 app.use("/", authRoutes);
-app.use("/", sessionFormation);
-app.use("/", formateurRoutes);
+
+app.use("/admin", adminRoutes);
+app.use("/formateur", formateurRoutes);
+app.use("/", studentRoutes);
+
 app.get("/", (req, res) => {
     res.render("index");
   }

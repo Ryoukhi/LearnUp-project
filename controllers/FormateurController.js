@@ -59,19 +59,19 @@ async function modifierFormateur(req, res) {
 
         // Validate input data
         if (!nom || !prenom || !email || !telephone) {
-            return res.status(400).json({ message: "Tous les champs (nom, prénom, email, téléphone) sont obligatoires." });
+            return req.flash("error", "Tous les champs sont obligatoires.");
         }
 
         const formateur = await User.findByPk(id);
         if (!formateur || formateur.role !== "formateur") {
-            return res.status(404).json({ message: "Formateur introuvable." });
+            return req.flash("error", "Formateur introuvable.");
         }
 
         // Check if the new email is already in use by another user
         if (email !== formateur.email) {
             const existingUser = await User.findOne({ where: { email } });
             if (existingUser) {
-                return res.status(400).json({ message: "Un utilisateur avec cet email existe déjà." });
+                return req.flash("error", "Un utilisateur avec cet email existe déjà.");
             }
         }
 
@@ -90,37 +90,37 @@ async function modifierFormateur(req, res) {
         const formateurs = await User.findAll({ where: { role: "formateur" } });
 
 
-        res.render("admin/gestion_formateurs", { user: req.user, formateurs });
+        req.flash("success", "Formateur modifié avec succès.");
+        res.redirect("/admin/gestion-formateurs");
         
         //return res.status(200).json({ message: "Formateur modifié avec succès !", formateur });
         
     } catch (error) {
         console.error("Erreur lors de la modification du formateur :", error);
-        return res.status(500).json({ message: "Une erreur est survenue." });
+        req.flash("error", "Une erreur est survenue lors de la modification du formateur.");
+        res.redirect("/admin/gestion-formateurs");
     }
 }
 
 // Delete a formateur
 async function supprimerFormateur(req, res) {
     try {
-        
-
         const { id } = req.params;
         const formateur = await User.findByPk(id);
         if (!formateur || formateur.role !== "formateur") {
-            return res.status(404).send("Formateur introuvable.");
+            req.flash("error", "Formateur introuvable.");
+            return res.redirect("/admin/gestion-formateurs");
         }
 
         await formateur.destroy();
 
-        // Fetch updated list of formateurs
-        const formateurs = await User.findAll({ where: { role: "formateur" } });
-
-        // Render the updated list in the admin view
-        res.render("admin/gestion_formateurs", { user: req.user, formateurs });
+        
+        req.flash("success", "Formateur supprimé avec succès.");
+        res.redirect("/admin/gestion-formateurs");
     } catch (error) {
         console.error("Erreur lors de la suppression du formateur :", error);
-        res.status(500).send("Une erreur est survenue.");
+        req.flash("error", "Une erreur est survenue lors de la suppression du formateur.");
+        res.redirect("/admin/gestion-formateurs");
     }
 }
 
@@ -130,12 +130,14 @@ async function getFormateur(req, res) {
         const { id } = req.params;
         const formateur = await User.findByPk(id);
         if (!formateur || formateur.role !== "formateur") {
-            return res.status(404).send("Formateur introuvable.");
+            req.flash("error", "Formateur introuvable.");
+        res.redirect("/admin/gestion-formateurs");
         }
         res.send(formateur);
     } catch (error) {
-        console.error("Erreur lors de la récupération du formateur :", error);
-        res.status(500).send("Une erreur est survenue.");
+        req.flash("error", "Erreur lors de la récupération du formateur.");
+        res.redirect("/admin/gestion-formateurs");
+        
     }
 }
 

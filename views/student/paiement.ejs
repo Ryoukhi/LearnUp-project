@@ -1,0 +1,55 @@
+<%- include("../partials/dashboard_student.ejs") %>
+
+<div class="container mx-auto p-6">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-2 transition-transform transform hover:scale-105">Paiement de la formation</h1>
+      <p class="text-gray-600 text-lg">Veuillez compléter votre inscription en effectuant le paiement</p>
+    </div>
+
+    <!-- Session Info Card -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8 transition-transform transform hover:scale-105">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Récapitulatif de la formation</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-gray-600"><span class="font-medium">Formation:</span> <%= session.titre %></p>
+         
+          <p class="text-gray-600"><span class="font-medium">Dates:</span> <%= session.dateDebut.toLocaleDateString() %> - <%= session.dateFin.toLocaleDateString() %></p>
+        </div>
+        <div class="text-right">
+          <p class="text-3xl font-bold text-orange-600"><%= session.montant %> FCFA</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Méthodes de paiement</h2>
+      
+      <form action="/etudiant/process-payment" method="POST">
+        <input type="hidden" name="sessionId" value="<%= session.id %>">
+        
+        <div class="space-y-4">
+          <% paymentMethods.forEach(method => { %>
+            <div class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-300 ease-in-out transform hover:shadow-lg">
+              <input id="<%= method.value %>" name="paymentMethod" type="radio" value="<%= method.value %>" 
+                class="h-5 w-5 text-orange-600 focus:ring-orange-500" required>
+              <label for="<%= method.value %>" class="ml-3 block text-gray-700 font-medium">
+                <%= method.name %>
+              </label>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="mt-6">
+          <button type="submit" 
+            class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105">
+            Payer maintenant
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

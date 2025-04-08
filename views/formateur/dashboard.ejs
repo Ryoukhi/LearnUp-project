@@ -2,16 +2,126 @@
 
 <!-- Main Content -->
 <main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300 pt-20">
-    <h1 class="text-4xl font-bold text-gray-900 mb-6">Tableau de Bord</h1>
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <p class="text-gray-700 text-lg">
-            Bienvenue sur votre tableau de bord. Ici, vous pouvez accéder à vos cours, devoirs, examens, et bien plus encore.
-        </p>
-        <p class="text-gray-700 text-lg">
-            Vous êtes connecté en tant que formateur.
-        </p>
+ 
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-4">
+    <% if (success && success.length > 0) { %>
+      <div class="toast bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md">
+        <strong class="font-bold">Succès:</strong>
+        <span class="block sm:inline"><%= success %></span>
+      </div>
+    <% } %>
+
+    <% if (error && error.length > 0) { %>
+      <div class="toast bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md">
+        <strong class="font-bold">Erreur:</strong>
+        <span class="block sm:inline"><%= error %></span>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+
+    <p class="text-lg font-semibold text-gray-900">
+
+        Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
+
+    </p>
+
+    <div class="text-right bg-white p-2 rounded-lg shadow-sm">
+
+        <div class="text-gray-600 font-medium">
+
+            <i class="far fa-calendar-alt mr-1"></i>
+
+            <span id="current-date">
+
+                <%= new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+
+            </span>
+
+        </div>
+
+        <div class="text-gray-500 text-sm">
+
+            <i class="far fa-clock mr-1"></i>
+
+            <span id="current-time">
+
+                <%= new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) %>
+
+            </span>
+
+        </div>
+
     </div>
 
+</div>
+
+<h1 class="text-4xl font-bold text-gray-900 mb-6">Tableau de Bord</h1>
+  
+  <!-- Cards Section -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Mes Sessions de Formation en cours -->
+    <a href="/formateur/formations-en-cours" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+      <i class="fas fa-chalkboard-teacher text-4xl mb-4"></i>
+      <span class="text-lg">Sessions de Formation en Cours</span>
+    </a>
+
+    <!-- Mes Sessions de Formation en attente -->
+    <a href="/formateur/formations-en-attente" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+        <i class="fas fa-chalkboard-teacher text-4xl mb-4"></i>
+        <span class="text-lg">Sessions de Formation en Attente</span>
+      </a>
+
+    <!-- Devoirs -->
+    <a href="/formateur/devoirs" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+      <i class="fas fa-tasks text-4xl mb-4"></i>
+      <span class="text-lg">Devoirs</span>
+    </a>
+
+    <!-- Another Useful Card -->
+    <a href="/formateur/ressources" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+      <i class="fas fa-folder-open text-4xl mb-4"></i>
+      <span class="text-lg">Statistiques</span>
+    </a>
+  </div>
 </main>
 
+<script>
+
+  function updateTime() {
+
+      const now = new Date();
+
+      const dateElement = document.getElementById('current-date');
+
+      const timeElement = document.getElementById('current-time');
+
+
+      // Update date
+
+      dateElement.textContent = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+
+      // Update time with seconds
+
+      timeElement.textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  }
+
+
+  // Update time every second
+
+  setInterval(updateTime, 1000);
+
+  // Initial call to set the time immediately
+
+  updateTime();
+
+</script>
+
+
 <%- include("../partials/footer-dash.ejs") %>
+

@@ -1,5 +1,13 @@
 </main>
 </div>
-
+<script>
+    // Automatically remove toast notifications after 5 seconds
+    setTimeout(() => {
+      const toastContainer = document.getElementById('toast-container');
+      if (toastContainer) {
+        toastContainer.innerHTML = ''; // Clear the toast container
+      }
+    }, 5000); // 5000ms = 5 seconds
+  </script>
 </body>
 </html>

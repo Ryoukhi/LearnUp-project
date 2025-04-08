@@ -28,13 +28,11 @@
         <button onclick="toggleSidebar()" class="text-gray-800 hover:text-orange-500">
             <i class="fas fa-bars text-2xl"></i>
         </button>
-        <p class="text-lg font-semibold text-gray-900">
-            Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
-        </p>
+        
         <div class="flex items-center space-x-6">
             <button class="relative text-gray-800 hover:text-orange-500">
                 <i class="fas fa-bell text-2xl"></i>
-                <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
             </button>
             <a href="/logout" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-lg transition-all">
                 Se déconnecter
@@ -52,23 +50,18 @@
         </div>
         <ul class="space-y-1 mt-2">
             <li>
-                <a href="" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="/dashboard" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-tachometer-alt mr-3"></i>
                     Dashboard
                 </a>
             </li>
             <li>
-                <a href="/mes-cours" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="/mes-sessions" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-book mr-3"></i>
                     Mes Sessions de Cours
                 </a>
             </li>
-            <li>
-                <a href="" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-video mr-3"></i>
-                    Visio-conférences
-                </a>
-            </li>
+            
             <li>
                 <a href="/catalogue" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-th-list mr-3"></i>
@@ -81,12 +74,7 @@
                     Devoirs
                 </a>
             </li>
-            <li>
-                <a href="" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-edit mr-3"></i>
-                    Examens
-                </a>
-            </li>
+            
             <li>
                 <a href="/notifications" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-bell mr-3"></i>
@@ -99,6 +87,7 @@
                     Certificats
                 </a>
             </li>
+            
             <li>
                 <a href="" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-cogs mr-3"></i>

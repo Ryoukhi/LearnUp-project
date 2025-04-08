@@ -1,21 +1,157 @@
 <%- include("../partials/dashboard_admin.ejs") %>
 <!-- Main Content -->
 <main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300 pt-20">
-    <h3 class="text-lg font-semibold text-gray-900">
+    
+
+    <!-- Toast Notifications -->
+<div id="toast-container" class="fixed top-5 right-5 z-50 space-y-4">
+    <% if (success && success.length > 0) { %>
+      <div class="toast bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md">
+        <strong class="font-bold">Succès:</strong>
+        <span class="block sm:inline"><%= success %></span>
+      </div>
+    <% } %>
+  
+    <% if (error && error.length > 0) { %>
+      <div class="toast bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md">
+        <strong class="font-bold">Erreur:</strong>
+        <span class="block sm:inline"><%= error %></span>
+      </div>
+    <% } %>
+  </div>
+
+
+
+  <div class="flex justify-between items-center mb-4">
+
+    <p class="text-lg font-semibold text-gray-900">
+
         Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
-    </h3>
-    <h1 class="text-4xl font-bold text-gray-900 mb-6">Tableau de Bord</h1>
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <p class="text-gray-700 text-lg">
-            Bienvenue sur votre tableau de bord. Ici, vous pouvez accéder à vos cours, devoirs, examens, et bien plus encore.
-        </p>
-        <p class="text-gray-700 text-lg">
-            Vous êtes connecté en tant qu'administrateur.
-        </p>
+
+    </p>
+
+    <div class="text-right bg-white p-2 rounded-lg shadow-sm">
+
+        <div class="text-gray-600 font-medium">
+
+            <i class="far fa-calendar-alt mr-1"></i>
+
+            <span id="current-date">
+
+                <%= new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %>
+
+            </span>
+
+        </div>
+
+        <div class="text-gray-500 text-sm">
+
+            <i class="far fa-clock mr-1"></i>
+
+            <span id="current-time">
+
+                <%= new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) %>
+
+            </span>
+
+        </div>
+
     </div>
 
+</div>
+
+    <!-- Cards Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Create New Trainer -->
+        <a href="/admin/gestion-formateurs" class="block bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-transform duration-300 hover:scale-105">
+
+            <div class="flex items-center space-x-4">
+                <div class="bg-orange-500 text-white p-3 rounded-full">
+                    <i class="fas fa-user text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Formateurs</h3>
+                    <p class="text-sm text-gray-600">Ajouter un nouveau formateur à la plateforme.</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Create New Training -->
+        <a href="/admin/creer-session" class="block bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-transform duration-300 hover:scale-105">
+
+            <div class="flex items-center space-x-4">
+                <div class="bg-blue-500 text-white p-3 rounded-full">
+                    <i class="fas fa-book text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Créer une Formation</h3>
+                    <p class="text-sm text-gray-600">Ajouter une nouvelle formation à la plateforme.</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Consult List of Trainings -->
+        <a href="/admin/gestion-formation" class="block bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-transform duration-300 hover:scale-105">
+
+            <div class="flex items-center space-x-4">
+                <div class="bg-green-500 text-white p-3 rounded-full">
+                    <i class="fas fa-list text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Liste des Formations</h3>
+                    <p class="text-sm text-gray-600">Consulter toutes les formations disponibles.</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Access Statistics -->
+        <a href="/admin/creer-formateur" class="block bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-transform duration-300 hover:scale-105">
+
+            <div class="flex items-center space-x-4">
+                <div class="bg-purple-500 text-white p-3 rounded-full">
+                    <i class="fas fa-chart-bar text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Statistiques</h3>
+                    <p class="text-sm text-gray-600">Accéder aux statistiques de la plateforme.</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </main>
 
+<script>
+
+    function updateTime() {
+
+        const now = new Date();
+
+        const dateElement = document.getElementById('current-date');
+
+        const timeElement = document.getElementById('current-time');
+
+
+        // Update date
+
+        dateElement.textContent = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+
+        // Update time with seconds
+
+        timeElement.textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    }
+
+
+    // Update time every second
+
+    setInterval(updateTime, 1000);
+
+    // Initial call to set the time immediately
+
+    updateTime();
+
+</script>
 
 
 <%- include("../partials/footer-dash.ejs") %>

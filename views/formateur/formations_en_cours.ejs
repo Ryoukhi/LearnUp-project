@@ -1,0 +1,99 @@
+<%- include('../partials/dashboard_formateur') %>
+
+<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">
+
+  <!-- Toast Notifications -->
+<div id="toast-container" class="fixed top-5 right-5 z-50 space-y-4">
+  <% if (success && success.length > 0) { %>
+    <div class="toast bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md">
+      <strong class="font-bold">Succès:</strong>
+      <span class="block sm:inline"><%= success %></span>
+    </div>
+  <% } %>
+
+  <% if (error && error.length > 0) { %>
+    <div class="toast bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md">
+      <strong class="font-bold">Erreur:</strong>
+      <span class="block sm:inline"><%= error %></span>
+    </div>
+  <% } %>
+</div>
+<div class="min-h-screen bg-gray-100 p-6">
+<!-- Header Section -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Mes Formations en Cours</h2>
+
+    <a href="/formateur/dashboard" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+      Retour au Dashboard
+    </a>
+  </div>
+
+  <% if (formations && formations.length > 0) { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% formations.forEach(formation => { %>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+          <!-- Contenu de la carte -->
+          <div class="p-6 flex flex-col flex-grow">
+            <!-- Image de la formation -->
+            <img src="<%= formation.image || '/images/ui.jpg' %>" alt="Formation" class="w-full h-32 object-cover rounded-lg mb-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2"><%= formation.titre %></h2>
+            
+            <!-- Infos -->
+            <div class="space-y-3 mb-6">
+              <!-- Date -->
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="text-gray-700"><%= formation.dateDebut.toLocaleDateString() %> - <%= formation.dateFin.toLocaleDateString() %></span>
+              </div>
+        
+              <!-- Montant -->
+              <div class="flex items-center">
+                <span class="text-green-500 font-bold text-lg mr-2">₣</span>
+                <span class="text-gray-700"><%= formation.montant %> FCFA</span>
+              </div>
+
+
+              <!-- Nombre de places -->
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5.121 17.804A9 9 0 1119 9M15 11a4 4 0 10-8 0 4 4 0 008 0zm-1 5H8a4 4 0 00-4 4v1h14v-1a4 4 0 00-4-4z"/>
+                </svg>
+                <span class="text-gray-700"><%= formation.nombre_place %> places disponibles</span>
+              </div>
+        
+              <!-- Statut -->
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="text-gray-700 capitalize"><%= formation.status %></span>
+              </div>
+            </div>
+        
+            <!-- Bouton fixé en bas -->
+            <div class="mt-auto pt-4">
+              <a href="/formateur/formations-en-cours/<%= formation.id %>" 
+                 class="block text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-300">
+                Voir plus
+              </a>
+            </div>
+          </div>
+        </div>
+        
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="bg-white rounded-lg shadow-md p-8 text-center">
+      <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <h2 class="text-xl font-medium text-gray-700 mt-4">Aucune formation en cours</h2>
+      <p class="text-gray-500 mt-2">Vous n'avez pas de formations en cours pour le moment.</p>
+    </div>
+  <% } %>
+</div>
+</main>
+<%- include('../partials/footer-dash') %>

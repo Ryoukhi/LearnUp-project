@@ -13,6 +13,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      User.belongsToMany(models.Videoconference, {
+        through: "SuivieCours", // Name of the join table
+        foreignKey: "userId", // Foreign key in the join table
+        otherKey: "videoconferenceId", // Other foreign key in the join table
+        as: "videoconferences", // Alias for the association
+      });
       
       
       User.hasMany(models.SessionFormation, {

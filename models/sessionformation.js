@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "formateur",
       });
 
+      SessionFormation.hasMany(models.Inscription, {
+        foreignKey: "idSession",
+        as: "inscriptions"
+      });
+      
       SessionFormation.belongsToMany(models.User, {
         through: "Inscription",
         foreignKey: "idSession",
@@ -61,17 +66,53 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   SessionFormation.init({
-    titre: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    dateDebut: DataTypes.DATE,
-    dateFin: DataTypes.DATE,
-    idFormateur: DataTypes.INTEGER,
-    montant: DataTypes.FLOAT,
-    
+    titre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    dateDebut: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    dateFin: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    idFormateur: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    montant: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    nombre_place: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM('en_cours', 'terminee', 'annulee', 'en_attente'),
+      allowNull: false,
+      defaultValue: 'en_attente',
+    },
+    certificat_disponible: {
+      type: DataTypes.ENUM('oui', 'non'),
+      allowNull: false,
+      defaultValue: 'non',
+    },
   }, {
     sequelize,
     modelName: 'SessionFormation',
   });
   return SessionFormation;
 };
+
+
+
+
+
 

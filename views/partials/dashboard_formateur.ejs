@@ -7,6 +7,37 @@
     <link rel="icon" href="/images/LearnUp.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        @keyframes fadeSmooth {
+          from { opacity: 0; transform: translateY(3px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      
+        .animate-fade-smooth {
+          animation: fadeSmooth 0.4s ease-out both;
+        }
+      
+        @keyframes pulseFast {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+      
+        .animate-pulse-fast {
+          animation: pulseFast 1.2s infinite;
+        }
+      
+        @keyframes clockSwing {
+          0%, 100% { transform: rotate(0); }
+          50% { transform: rotate(1deg); }
+        }
+      
+        .animate-clock-swing {
+          animation: clockSwing 2s ease-in-out infinite;
+          transform-origin: center;
+        }
+      </style>
+      
     <script>
         // JavaScript to toggle the sidebar and shift the main content
         function toggleSidebar() {
@@ -15,6 +46,8 @@
 
             sidebar.classList.toggle("-translate-x-full");
             mainContent.classList.toggle("lg:ml-64");
+
+            
         }
     </script>
 </head>
@@ -27,9 +60,7 @@
         <button onclick="toggleSidebar()" class="text-gray-800 hover:text-orange-500">
             <i class="fas fa-bars text-2xl"></i>
         </button>
-        <p class="text-lg font-semibold text-gray-900">
-            Bienvenue, <span class="text-orange-500"><%= user.nom %></span> !
-        </p>
+        
         <div class="flex items-center space-x-6">
             <button class="relative text-gray-800 hover:text-orange-500">
                 <i class="fas fa-bell text-2xl"></i>
@@ -59,46 +90,28 @@
             <li>
                 <a href="/formateurs/formations" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-book mr-3"></i>
-                    Mes Sessions de formation
+                    Mes Sessions en cours
                 </a>
             </li>
             <li>
-                <a href="/visios" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-video mr-3"></i>
-                    Visio-conférences
+                <a href="/formateurs/formations" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                    <i class="fas fa-book mr-3"></i>
+                    Mes Sessions en attente
                 </a>
             </li>
+            
             
             <li>
                 <a href="/devoirs" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-file-alt mr-3"></i>
-                    Ressources
-                </a>
-            </li>
-            <li>
-                <a href="/examens" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-edit mr-3"></i>
-                    Examens
-                </a>
-            </li>
-            <li>
-                <a href="/notifications" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-bell mr-3"></i>
-                    Quiz
-                </a>
-            </li>
-            <li>
-                <a href="/certificats" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-certificate mr-3"></i>
                     Devoirs
                 </a>
             </li>
-            <li>
-                <a href="/certificats" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
-                    <i class="fas fa-certificate mr-3"></i>
-                    Forum
-                </a>
-            </li>
+            
+            
+            
+            
+            
             <li>
                 <a href="/parametres" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-cogs mr-3"></i>

@@ -10,7 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Inscription.belongsTo(models.User, {
+        foreignKey: 'idUser',
+        as: 'user'
+      });
+      Inscription.belongsTo(models.SessionFormation, {
+        foreignKey: 'idSession', 
+        as: 'session'
+      });
     }
   }
   Inscription.init({
@@ -34,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+    },
+    status: {
+      type: DataTypes.ENUM('pending', 'active', 'cancelled'),
+      allowNull: false,
+      defaultValue: 'pending',
     },
   }, {
     sequelize,
