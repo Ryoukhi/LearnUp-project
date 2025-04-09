@@ -3,9 +3,9 @@ const router = express.Router();
 const {
   getFormationsEnAttente,
   afficherDetailsSessionCatalogue,
-  getActiveStudentFormations,
+  completeVideoconferenceStudent,
   displayMesSessions,
-  afficherPaiementFormation
+  afficherPaiementFormation, afficherDetailsSessionAchetees
 } = require('../controllers/sessionFormationController');
 const {ensureAuthenticated} = require("../middlewares/ensureAuthenticated");
 const {checkRole} = require("../middlewares/roleMiddleware");
@@ -31,17 +31,24 @@ router.get('/inscription-session/:id',
   afficherPaiementFormation
 );
 
-// Get active formations for a student
-router.get('/mes-sessions/:idUser',
-  ensureAuthenticated,
-  checkRole(['apprenant']),
-  getActiveStudentFormations
-);
-
+// List all sessions for current student
 router.get('/mes-sessions',
   ensureAuthenticated,
   checkRole(['apprenant']),
   displayMesSessions
 );
 
+// Get details of a specific purchased session
+router.get('/mes-sessions/details/:id',
+  ensureAuthenticated,
+  checkRole(['apprenant']),
+  afficherDetailsSessionAchetees
+);
+
+// Mark videoconference as completed (accessible to both formateurs and students)
+router.post('/conference/:id/complete',
+  ensureAuthenticated,
+  checkRole(['apprenant']),
+  completeVideoconferenceStudent
+);
 module.exports = router;

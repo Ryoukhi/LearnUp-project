@@ -35,7 +35,7 @@ router.get('/formations-en-attente/:id', ensureAuthenticated, checkRole(['format
 
 
 
-// Mark videoconference as completed
+// Mark videoconference as completed (accessible to both formateurs and students)
 router.post('/videoconference/:id/complete', 
   ensureAuthenticated, 
   checkRole(['formateur']), 

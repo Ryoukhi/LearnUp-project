@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { afficherFormulaireSession, creerSession, listerSessions, afficherDetailsSession, afficherFormulaireVisio, ajouterVisio, modifierSession, modifierVisio, supprimerVisio } = require('../controllers/sessionFormationController');
+const { getStudentCount, getTeacherCount, getSessionCount, getDailySubscriptions, getLearnerRegistrations } = require('../controllers/statsController');
 const {ensureAuthenticated} = require("../middlewares/ensureAuthenticated");
 const {checkRole} = require("../middlewares/roleMiddleware");
 const { creerFormateur, listerFormateurs, modifierFormateur, supprimerFormateur,getFormateur } = require("../controllers/FormateurController");
@@ -9,6 +10,13 @@ const { creerFormateur, listerFormateurs, modifierFormateur, supprimerFormateur,
 router.get('/dashboard', ensureAuthenticated, checkRole(['admin']), (req, res) => {
   res.render('admin/dashboard', { user: req.user });
 });
+
+// Statistics Endpoints
+router.get('/api/stats/students', ensureAuthenticated, checkRole(['admin']), getStudentCount);
+router.get('/api/stats/teachers', ensureAuthenticated, checkRole(['admin']), getTeacherCount);
+router.get('/api/stats/sessions', ensureAuthenticated, checkRole(['admin']), getSessionCount);
+router.get('/api/stats/subscriptions', ensureAuthenticated, checkRole(['admin']), getDailySubscriptions);
+router.get('/api/stats/learner-registrations', ensureAuthenticated, checkRole(['admin']), getLearnerRegistrations);
 
 
 

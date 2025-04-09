@@ -607,45 +607,7 @@ exports.afficherDetailsSessionCatalogue = async (req, res) => {
   }
 };
 
-exports.getActiveStudentFormations = async (req, res) => {
-  try {
-    const { idUser } = req.params;
 
-    // Get all formations where the student has active inscriptions
-    const formations = await SessionFormation.findAll({
-      include: [{
-        model: Inscription,
-        where: { 
-          idUser,
-          status: 'active'
-        },
-        attributes: [] // Exclude inscription details
-      }],
-      order: [['dateDebut', 'ASC']] // Order by start date
-    });
-
-    if (!formations || formations.length === 0) {
-
-      req.flash('error_msg', 'No active formations found for this student');
-
-      return res.redirect('/dashboard'); // Redirect to the appropriate path
-
-  }
-
-    res.render('student/mes_sessions', {
-      user: req.user,
-      formations
-    });
-
-  } catch (error) {
-    console.error('Error fetching active formations:', error);
-
-    req.flash('error_msg', 'Failed to retrieve active formations');
-
-    return res.redirect('/dashboard'); // Redirect to the appropriate path
-  }
-
-};
 
 exports.validateCourse = async (req, res) => {
   try {
@@ -746,29 +708,29 @@ exports.afficherPaiementFormation = async (req, res) => {
   }
 };
 
-exports.afficherDetailsMesSessions = async (req, res) => {
+
+exports.afficherDetailsSessionAchetees = async (req, res) => {
   try {
     const sessionId = req.params.id;
     if (!sessionId || isNaN(sessionId)) {
       req.flash('error', 'ID de session invalide.');
-      return res.redirect('/dashboard');
+      return res.redirect('/mes-sessions');
     }
 
     // Fetch the session details with formateur information
-    const formations = await SessionFormation.findByPk(sessionId, {
+    const session = await SessionFormation.findByPk(sessionId, {
       include: [
         {
           model: User,
           as: 'formateur',
-          attributes: ['id', 'nom', 'prenom'],
+          attributes: ['id', 'nom', 'prenom', 'email'],
         },
       ],
     });
 
-    if (!formations) {
+    if (!session) {
       req.flash('error', 'Session introuvable.');
-      return res.redirect('/mes_sessions',{
-        user: req.user, formations});
+      return res.redirect('/mes-sessions');
     }
 
     // Fetch videoconferences with completion status for current trainer
@@ -784,8 +746,8 @@ exports.afficherDetailsMesSessions = async (req, res) => {
     });
 
     // Render the template with session and videoconferences data
-    return res.render('student/details_mes_sessions', { 
-      formations, 
+    return res.render('student/contenu_mes_formation', { 
+      session, 
       videoconferences,
       currentDate: new Date()
     });
@@ -794,6 +756,45 @@ exports.afficherDetailsMesSessions = async (req, res) => {
     console.error('Erreur lors de la récupération des détails de la session :', error);
     console.error('Stack trace:', error.stack);
     req.flash('error', `Une erreur est survenue lors du chargement des détails de la session: ${error.message}`);
-    return res.redirect('/mes_sessions');
+    return res.redirect('/mes-sessions');
+  }
+};
+
+
+exports.completeVideoconferenceStudent = async (req, res) => {
+  try {
+    const videoconferenceId = req.params.id;
+    const userId = req.user.id;
+
+    // Check if the videoconference exists
+    const videoconference = await Videoconference.findByPk(videoconferenceId);
+    if (!videoconference) {
+      return res.status(404).json({ success: false, message: 'Vidéoconférence introuvable' });
+    }
+
+    // Check if the course is already marked as completed
+    const existingRecord = await SuivieCours.findOne({
+      where: {
+        videoconferenceId: videoconferenceId,
+        userId: userId
+      }
+    });
+
+    if (existingRecord) {
+      return res.status(400).json({ success: false, message: 'Ce cours a déjà été validé' });
+    }
+
+    // Create a new SuivieCours record
+    await SuivieCours.create({
+      videoconferenceId: videoconferenceId,
+      userId: userId,
+      dateValidation: new Date(),
+      signedIn: true
+    });
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur lors de la validation du cours:', error);
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
