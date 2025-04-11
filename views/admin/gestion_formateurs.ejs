@@ -1,5 +1,36 @@
 <%- include("../partials/dashboard_admin.ejs") %>
 <main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">
+
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 space-y-4">
+    <% if (success && success.length > 0) { %>
+      <div class="toast bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md">
+        <strong class="font-bold">Succès:</strong>
+        <span class="block sm:inline"><%= success %></span>
+      </div>
+    <% } %>
+  
+    <% if (error && error.length > 0) { %>
+      <div class="toast bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md">
+        <strong class="font-bold">Erreur:</strong>
+        <span class="block sm:inline"><%= error %></span>
+      </div>
+    <% } %>
+    </div>
+
+
+    <div class="container mx-auto p-6 space-y-6">
+      <!-- Header Section -->
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold text-gray-800">Gérez vos formateurs</h2>
+        <a href="/formateur/dashboard" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+          Retour
+        </a>
+      </div>
+    </div>
+
+    
 <div class="container mx-auto p-6">
   <!-- Ajouter un Formateur Card -->
   <div class="bg-white shadow-md rounded-lg p-6 mb-8 pt-10">
@@ -7,45 +38,36 @@
     <form action="/admin/creer-formateur" method="POST" class="space-y-4">
       
       
-      <!-- Toast Notifications -->
-<div id="toast-container" class="fixed top-5 right-5 z-50 space-y-4">
-  <% if (success && success.length > 0) { %>
-    <div class="toast bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md">
-      <strong class="font-bold">Succès:</strong>
-      <span class="block sm:inline"><%= success %></span>
-    </div>
-  <% } %>
-
-  <% if (error && error.length > 0) { %>
-    <div class="toast bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md">
-      <strong class="font-bold">Erreur:</strong>
-      <span class="block sm:inline"><%= error %></span>
-    </div>
-  <% } %>
-</div>
+   
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
-          <input type="text" id="nom" name="nom" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-        </div>
-        <div>
-          <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
-          <input type="text" id="prenom" name="prenom" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" id="email" name="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-        </div>
-        <div>
-          <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
-          <input type="text" id="telephone" name="telephone" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Mot de Passe</label>
-          <input type="password" id="password" name="motDePasse" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-        </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-white rounded-2xl shadow-lg">
+      <div>
+        <label for="nom" class="block text-lg font-medium text-gray-700 mb-2">Nom</label>
+        <input type="text" id="nom" name="nom" required
+          class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
       </div>
+      <div>
+        <label for="prenom" class="block text-lg font-medium text-gray-700 mb-2">Prénom</label>
+        <input type="text" id="prenom" name="prenom" required
+          class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+      </div>
+      <div>
+        <label for="email" class="block text-lg font-medium text-gray-700 mb-2">Email</label>
+        <input type="email" id="email" name="email" required
+          class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+      </div>
+      <div>
+        <label for="telephone" class="block text-lg font-medium text-gray-700 mb-2">Téléphone</label>
+        <input type="text" id="telephone" name="telephone" required
+          class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+      </div>
+      <div class="md:col-span-2">
+        <label for="password" class="block text-lg font-medium text-gray-700 mb-2">Mot de Passe</label>
+        <input type="password" id="password" name="motDePasse" required
+          class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+      </div>
+    </div>
+    
      
       <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
         Ajouter Formateur
@@ -79,31 +101,41 @@
                 <a href="#" class="text-blue-600 hover:text-blue-900 mr-4" onclick="openModal('<%= formateur.id %>', '<%= formateur.nom %>', '<%= formateur.prenom %>', '<%= formateur.email %>', '<%= formateur.telephone %>')">Modifier</a>
 
                 <!-- Modal -->
-                <div id="modal-<%= formateur.id %>" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
-                  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                    <h2 class="text-xl font-bold mb-4">Modifier Formateur</h2>
-                    <form action="/admin/modifier-formateur/<%= formateur.id %>" method="POST" class="space-y-4">
-                      <div>
-                        <label for="nom-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Nom</label>
-                        <input type="text" id="nom-<%= formateur.id %>" name="nom" value="<%= formateur.nom %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-                      </div>
-                      <div>
-                        <label for="prenom-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Prénom</label>
-                        <input type="text" id="prenom-<%= formateur.id %>" name="prenom" value="<%= formateur.prenom %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-                      </div>
-                      <div>
-                        <label for="email-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" id="email-<%= formateur.id %>" name="email" value="<%= formateur.email %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-                      </div>
-                      <div>
-                        <label for="telephone-<%= formateur.id %>" class="block text-sm font-medium text-gray-700">Téléphone</label>
-                        <input type="text" id="telephone-<%= formateur.id %>" name="telephone" value="<%= formateur.telephone %>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
-                      </div>
-                      <div class="flex justify-end space-x-4">
-                        <button type="button" onclick="closeModal('<%= formateur.id %>')" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg">Annuler</button>
-                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg">Enregistrer</button>
-                      </div>
-                    </form>
+                <div id="modal-<%= formateur.id %>" class="z-[350] fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center transition-all duration-300 ease-in-out">
+                  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg transform transition-all scale-95 animate-fade-in">
+                      <h2 class="text-3xl font-extrabold text-center mb-8 text-gray-800">✏️ Modifier Formateur</h2>
+                      <form action="/admin/modifier-formateur/<%= formateur.id %>" method="POST" class="space-y-6">
+                          <div>
+                              <label for="nom-<%= formateur.id %>" class="block text-lg font-medium text-gray-700 mb-2">Nom</label>
+                              <input type="text" id="nom-<%= formateur.id %>" name="nom" value="<%= formateur.nom %>" required
+                                  class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+                          </div>
+                          <div>
+                              <label for="prenom-<%= formateur.id %>" class="block text-lg font-medium text-gray-700 mb-2">Prénom</label>
+                              <input type="text" id="prenom-<%= formateur.id %>" name="prenom" value="<%= formateur.prenom %>" required
+                                  class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+                          </div>
+                          <div>
+                              <label for="email-<%= formateur.id %>" class="block text-lg font-medium text-gray-700 mb-2">Email</label>
+                              <input type="email" id="email-<%= formateur.id %>" name="email" value="<%= formateur.email %>" required
+                                  class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+                          </div>
+                          <div>
+                              <label for="telephone-<%= formateur.id %>" class="block text-lg font-medium text-gray-700 mb-2">Téléphone</label>
+                              <input type="text" id="telephone-<%= formateur.id %>" name="telephone" value="<%= formateur.telephone %>" required
+                                  class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:border-orange-500 transition">
+                          </div>
+                          <div class="flex justify-end space-x-4 pt-6">
+                              <button type="button" onclick="closeModal('<%= formateur.id %>')"
+                                  class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2.5 px-6 rounded-xl shadow-sm transition duration-200">
+                                  ❌ Annuler
+                              </button>
+                              <button type="submit"
+                                  class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition duration-200">
+                                  💾 Enregistrer
+                              </button>
+                          </div>
+                      </form>
                   </div>
                 </div>
 

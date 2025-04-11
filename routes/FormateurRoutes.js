@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { afficherFormationsEnCoursFormateur, afficherFormationsEnAttenteFormateur,afficherFormationsTermineesFormateur, afficherDetailsSessionEnCours, afficherDetailsSessionEnAttente, completeVideoconference } = require('../controllers/sessionFormationController');
+const { afficherFormationsEnCoursFormateur, afficherFormationsEnAttenteFormateur,afficherFormationsTermineesFormateur, afficherDetailsSessionEnCours, afficherDetailsSessionEnAttente, completeVideoconference, modifierVisioFormateur } = require('../controllers/sessionFormationController');
 const {ensureAuthenticated} = require("../middlewares/ensureAuthenticated");
 const {checkRole} = require("../middlewares/roleMiddleware");
 const { SuivieCours } = require('../models');
@@ -42,6 +42,7 @@ router.post('/videoconference/:id/complete',
   completeVideoconference
 );
 
+router.post('/videoconferences/modifier/:id',ensureAuthenticated, checkRole(['formateur']), modifierVisioFormateur);
 
 
 

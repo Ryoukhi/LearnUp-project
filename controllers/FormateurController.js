@@ -11,7 +11,8 @@ async function creerFormateur(req, res) {
         // Check if the email already exists in the database
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
-            return res.status(400).send("Un utilisateur avec cet email existe déjà.");
+            req.flash('error', 'Un utilisateur avec cet email existe déjà.');
+            return res.redirect('/admin/gestion-formateurs'); // ou autre route vers ton formulaire
         }
 
         // Hash the password with bcrypt
@@ -30,10 +31,14 @@ async function creerFormateur(req, res) {
 
         // Fetch updated list of formateurs
         const formateurs = await User.findAll({ where: { role: "formateur" } });
-        res.render("admin/gestion_formateurs", { user: req.user, formateurs });
+
+        req.flash('success', 'Formateur créé avec succès.');
+
+        res.redirect('/admin/gestion-formateurs');
     } catch (error) {
         console.error("Erreur lors de la création du formateur :", error);
-        res.status(500).send("Une erreur est survenue.");
+        req.flash('error', 'Une erreur est survenue.');
+        return res.redirect('/admin/gestion-formateurs');
     }
 }
 

@@ -33,43 +33,25 @@ module.exports = (sequelize, DataTypes) => {
   }
   Videoconference.init({
     titre: {
-
-        type: DataTypes.STRING,
-
-        allowNull: false, // Assuming title should not be null
-
-      },
-
-      description: {
-
-        type: DataTypes.STRING,
-
-        allowNull: true, // Assuming description can be null
-
-      },
-
-      dateHeure: {
-
-        type: DataTypes.DATE,
-
-        allowNull: false, // Assuming date and time should not be null
-
-      },
-
-      lien: {
-
-        type: DataTypes.STRING,
-
-        allowNull: true, // Allowing null for the link
-
-      },
-
-    }, {
-
-      sequelize,
-
-      modelName: 'Videoconference',
-
-    });
+      type: DataTypes.STRING,
+      allowNull: false, // Assuming title should not be null
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true, // Assuming description can be null
+    },
+    dateHeure: {
+      type: DataTypes.DATE,
+      allowNull: false, // Assuming date and time should not be null
+    },
+    lien: {
+      type: DataTypes.STRING,
+      allowNull: true, // Allowing null for the link
+    },
+  
+  }, {
+    sequelize,
+    modelName: 'Videoconference',
+  });
   return Videoconference;
 };

@@ -1,0 +1,41 @@
+<%- include("../partials/dashboard_admin.ejs") %>
+
+<div class="overflow-x-auto">
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 border-b">Date</th>
+          <th class="py-2 px-4 border-b">Heure</th>
+          <th class="py-2 px-4 border-b">Formateur Présent</th>
+          <th class="py-2 px-4 border-b">Date Validation</th>
+          <th class="py-2 px-4 border-b">Étudiants Présents</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% stats.forEach(stat => { %>
+          <tr>
+            <td class="py-2 px-4 border-b text-center"><%= stat.date %></td>
+            <td class="py-2 px-4 border-b text-center"><%= stat.heure %></td>
+            <td class="py-2 px-4 border-b text-center">
+              <% if(stat.formateurPresent) { %>
+                <span class="text-green-500">✓</span>
+              <% } else { %>
+                <span class="text-red-500">✗</span>
+              <% } %>
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              <%= stat.dateValidation || 'Non validé' %>
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              <a href="/sessions/<%= session.id %>/presences/<%= stat.vcId %>" 
+                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
+                <%= stat.studentCount %> étudiants
+              </a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+<%- include("../partials/footer-dash.ejs") %>

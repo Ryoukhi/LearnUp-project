@@ -10,6 +10,9 @@ const path = require("path");
 
 const app = express();
 
+
+const PORT = process.env.PORT;
+
 // Set EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -49,7 +52,7 @@ app.use(passport.session());
 // Routes
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const formateurRoutes = require("./routes/FormateurRoutes");
+const formateurRoutes = require("./routes/formateurRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 
 
@@ -71,5 +74,8 @@ app.get("/", (req, res) => {
 sequelize.sync().then(() => console.log("Base de données synchronisée"));
 
 // Démarrage du serveur
-app.listen(5000, () => console.log("Serveur démarré sur http://localhost:5000"));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Serveur démarré sur http://0.0.0.0:${PORT}");
+});
+
 

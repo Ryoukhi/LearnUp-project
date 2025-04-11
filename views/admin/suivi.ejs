@@ -1,0 +1,48 @@
+<%- include("../partials/dashboard_admin.ejs") %>
+<main id="main-content" class="flex-1 bg-gray-100 p-8 transition-all duration-300">
+  <div class="container mx-auto p-6">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Suivi des Formations</h2>
+      <a href="/admin/dashboard" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+        Retourner au tableau de bord
+      </a>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-4">
+      <% if (success && success.length > 0) { %>
+        <div class="toast bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md" aria-live="polite">
+          <strong class="font-bold">Succès:</strong>
+          <span class="block sm:inline"><%= success %></span>
+        </div>
+      <% } %>
+
+      <% if (error && error.length > 0) { %>
+        <div class="toast bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md" aria-live="polite">
+          <strong class="font-bold">Erreur:</strong>
+          <span class="block sm:inline"><%= error %></span>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Mes Sessions de Formation -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+      <a href="/admin/suivi-formation_en_attente" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+        <i class="fas fa-chalkboard-teacher text-4xl mb-4"></i>
+        <span class="text-lg">Sessions de Formation en Attente</span>
+      </a>
+
+      <a href="/admin/suivi-formation_en_cours" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+        <i class="fas fa-spinner text-4xl mb-4"></i>
+        <span class="text-lg">Sessions de Formation en Cours</span>
+      </a>
+
+      <a href="/admin/suivi-formation_terminee" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-6 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 flex flex-col items-center">
+        <i class="fas fa-check-circle text-4xl mb-4"></i>
+        <span class="text-lg">Sessions de Formation Terminées</span>
+      </a>
+    </div>
+  </div>
+</main>
+<%- include("../partials/footer-dash.ejs") %>

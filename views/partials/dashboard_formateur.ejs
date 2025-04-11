@@ -54,18 +54,23 @@
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
 
 <!-- Navbar -->
-<nav class="bg-white shadow-md px-6 py-4 fixed top-0 left-0 w-full z-50">
+<nav class="z-[200] bg-white shadow-md px-6 py-4 fixed top-0 left-0 w-full z-50">
     <div class="container mx-auto flex justify-between items-center">
         <!-- Hamburger Menu -->
-        <button onclick="toggleSidebar()" class="text-gray-800 hover:text-orange-500">
-            <i class="fas fa-bars text-2xl"></i>
-        </button>
+        <div class="flex items-center space-x-4">
+            <!-- Hamburger Menu -->
+            <button onclick="toggleSidebar()" class="text-gray-800 hover:text-orange-500">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+            <!-- Logo & Site Name -->
+            <a href="/" class="hidden md:flex items-center text-black-500 text-2xl font-bold">
+                <img src="/images/LearnUp.png" alt="LearnUp Logo" class="w-12 h-auto mr-2">
+                <span>Learn<span class="text-orange-500">Up</span></span>
+            </a>
+        </div>
         
         <div class="flex items-center space-x-6">
-            <button class="relative text-gray-800 hover:text-orange-500">
-                <i class="fas fa-bell text-2xl"></i>
-                <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-            </button>
+            
             <a href="/logout" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-lg transition-all">
                 Se déconnecter
             </a>
@@ -76,7 +81,7 @@
 <!-- Main Layout -->
 <div class="flex">
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white min-h-screen fixed transform -translate-x-full transition-transform duration-300 ease-in-out">
+    <aside id="sidebar" class="z-[100] w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white min-h-screen fixed transform -translate-x-full transition-transform duration-300 ease-in-out ">
         <div class="p-6 border-b border-gray-700 mt-16">
             <h2 class="text-2xl font-bold text-gray-100">Menu</h2>
         </div>
@@ -88,13 +93,13 @@
                 </a>
             </li>
             <li>
-                <a href="/formateurs/formations" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="/formateur/formations-en-cours" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-book mr-3"></i>
                     Mes Sessions en cours
                 </a>
             </li>
             <li>
-                <a href="/formateurs/formations" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="/formateur/formations-en-attente" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-book mr-3"></i>
                     Mes Sessions en attente
                 </a>
@@ -102,7 +107,7 @@
             
             
             <li>
-                <a href="/devoirs" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="#" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-file-alt mr-3"></i>
                     Devoirs
                 </a>
@@ -113,7 +118,7 @@
             
             
             <li>
-                <a href="/parametres" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
+                <a href="#" class="flex items-center p-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">
                     <i class="fas fa-cogs mr-3"></i>
                     Paramètres
                 </a>

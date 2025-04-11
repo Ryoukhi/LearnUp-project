@@ -1,5 +1,6 @@
+const { where } = require("sequelize");
 const { SessionFormation, User, Videoconference, SuivieCours, Inscription } = require("../models");
-
+const { Op } = require('sequelize');
 exports.afficherFormulaireSession = async (req, res) => {
   try {
     // Fetch all formateurs from the User table
@@ -29,7 +30,6 @@ exports.creerSession = async (req, res) => {
       formateur,
       montant,
       nombre_place,
-      status,
       certificat_disponible,
     } = req.body;
 
@@ -42,11 +42,10 @@ exports.creerSession = async (req, res) => {
       !formateur ||
       !montant ||
       !nombre_place ||
-      !status ||
       !certificat_disponible
     ) {
       req.flash('error', 'Veuillez remplir tous les champs obligatoires.');
-      return res.redirect('/admin/dashboard');
+      return res.redirect('/admin/creer-session');
     }
 
     // Validate date range
@@ -57,18 +56,35 @@ exports.creerSession = async (req, res) => {
 
     // Save the session to the database
 
-    await SessionFormation.create({
-      titre,
-      description,
-      dateDebut,
-      dateFin,
-      idFormateur: formateur,
-      montant,
-      nombre_place,
-      status,
-      certificat_disponible,
-    });
+    // Get the current date
+const currentDate = new Date();
 
+// Parse the start and end dates from the input (assuming they are in a format that can be parsed by the Date constructor)
+const startDate = new Date(dateDebut);
+const endDate = new Date(dateFin);
+
+// Determine the status based on the current date
+let status;
+if (startDate <= currentDate && endDate >= currentDate) {
+    status = 'en_cours'; // The session is currently ongoing
+} else if (endDate < currentDate) {
+    status = 'terminee'; // The session has ended
+} else if (startDate > currentDate) {
+    status = 'en_attente'; // The session is upcoming
+}
+
+// Create the session with the determined status
+await SessionFormation.create({
+    titre,
+    description,
+    dateDebut,
+    dateFin,
+    idFormateur: formateur,
+    montant,
+    nombre_place,
+    status, // Use the determined status
+    certificat_disponible,
+});
     console.log("Session de formation créée avec succès !");
     console.log(req.body); // Log the request body for debugging
     req.flash('success', 'La session a été créée avec succès.');
@@ -82,96 +98,13 @@ exports.creerSession = async (req, res) => {
 
 
 
-exports.listerSessions = async (req, res) => {
-  try {
-    // Fetch all sessions with their associated formateurs
-    const formations = await SessionFormation.findAll({
-      include: [
-        {
-          model: User,
-          as: 'formateur', // Assuming the alias for the formateur association is 'formateur'
-          attributes: ['id', 'nom', 'prenom'], // Fetch only necessary fields
-        },
-      ],
-      order: [['dateDebut', 'ASC']], // Order sessions by start date
-    });
-
-    // Render the EJS template with the list of formations
-    res.render('admin/gestion_formation', { user: req.user, formations });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des sessions de formation :', error);
-    req.flash('error', 'Une erreur est survenue lors du chargement des sessions de formation.');
-    res.redirect('/admin/dashboard');
-  }
-};
 
 
 
-exports.afficherDetailsSession = async (req, res) => {
-  try {
-    const sessionId = req.params.id;
-
-    // Fetch the session details
-    const session = await SessionFormation.findByPk(sessionId, {
-      include: [
-        {
-          model: User,
-          as: 'formateur',
-          attributes: ['id', 'nom', 'prenom'],
-        },
-      ],
-    });
-
-    if (!session) {
-      req.flash('error', 'Session introuvable.');
-      return res.redirect('/admin/gestion-formation');
-    }
-
-    // Fetch videoconferences related to the session with SuivieCours status
-    const videoconferences = await Videoconference.findAll({
-      where: { idSession: sessionId },
-      order: [['dateHeure', 'ASC']],
-      
-    });
-
-    
-
-    // Render the template
-    res.render('admin/get_formations', { session, videoconferences });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des détails de la session :', error);
-    req.flash('error', 'Une erreur est survenue lors du chargement des détails de la session.');
-    res.redirect('/admin/gestion-formation');
-  }
-};
 
 
 
-exports.modifierSession = async (req, res) => {
-  try {
-    const sessionId = req.params.id;
-    const { titre, description, dateDebut, dateFin, montant, nombre_place } = req.body;
 
-    // Validate input
-    if (!titre || !description || !dateDebut || !dateFin || !montant || !nombre_place) {
-      req.flash('error', 'Tous les champs sont obligatoires.');
-      return res.redirect(`/admin/gestion-formation/${sessionId}`);
-    }
-
-    // Update the session in the database
-    await SessionFormation.update(
-      { titre, description, dateDebut, dateFin, montant, nombre_place },
-      { where: { id: sessionId } }
-    );
-
-    req.flash('success', 'La session a été modifiée avec succès.');
-    res.redirect(`/admin/gestion-formation/${sessionId}`);
-  } catch (error) {
-    console.error('Erreur lors de la modification de la session :', error);
-    req.flash('error', 'Une erreur est survenue lors de la modification de la session.');
-    res.redirect(`/admin/gestion-formation/${sessionId}`);
-  }
-};
 
 
 
@@ -238,37 +171,6 @@ exports.ajouterVisio = async (req, res) => {
 
 
 
-exports.modifierVisio = async (req, res) => {
-  try {
-    const visioId = req.params.id; // Get the videoconference ID
-    const sessionId = req.params.sessionId; // Get the session ID (if applicable)
-    const { titre, description, dateHeure, lien } = req.body;
-
-    // Debugging logs
-    console.log('visioId:', visioId);
-    console.log('sessionId:', sessionId);
-    console.log('Request Body:', req.body);
-
-    // Validate required fields
-    if (!visioId || !titre || !description || !dateHeure || !lien) {
-      req.flash('error', 'Tous les champs sont obligatoires.');
-      return res.redirect(`/admin/gestion-formation/${sessionId || ''}`);
-    }
-
-    // Update the videoconference in the database
-    await Videoconference.update(
-      { titre, description, dateHeure, lien },
-      { where: { id: visioId } }
-    );
-
-    req.flash('success', 'La vidéoconférence a été modifiée avec succès.');
-    res.redirect(`/admin/gestion-formation/${sessionId || ''}`);
-  } catch (error) {
-    console.error('Erreur lors de la modification de la vidéoconférence :', error);
-    req.flash('error', 'Une erreur est survenue lors de la modification de la vidéoconférence.');
-    res.redirect(`/admin/gestion-formation/${req.params.sessionId || ''}`);
-  }
-};
 
 
 
@@ -796,5 +698,509 @@ exports.completeVideoconferenceStudent = async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la validation du cours:', error);
     return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+exports.modifierVisioFormateur = async (req, res) => {
+  try {
+    const visioId = req.params.id; // Get the videoconference ID
+    const sessionId = req.params.sessionId; // Get the session ID (if applicable)
+    const { lien } = req.body;
+
+    // Debugging logs
+    console.log('visioId:', visioId);
+    console.log('sessionId:', sessionId);
+    console.log('Request Body:', req.body);
+
+    // Validate required fields
+   /* if (!visioId || !titre || !description || !dateHeure) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/gestion-formation/${sessionId || ''}`);
+    }*/
+
+    // Update the videoconference in the database
+    await Videoconference.update(
+      { lien },
+      { where: { id: visioId } }
+    );
+
+    req.flash('success', 'La vidéoconférence a été modifiée avec succès.');
+    res.redirect(`/formateur/formations-en-attente/${sessionId || ''}`);
+  } catch (error) {
+    console.error('Erreur lors de la modification de la vidéoconférence :', error);
+    req.flash('error', 'Une erreur est survenue lors de la modification de la vidéoconférence.');
+    res.redirect(`/formateur/formations-en-attente/${req.params.sessionId || ''}`);
+  }
+};
+
+
+exports.listerSessionsEnattente = async (req, res) => {
+  try {
+    // Fetch all sessions with their associated formateurs
+    const formations = await SessionFormation.findAll({
+      where: {
+        status: 'en_attente'
+      },
+     
+      include: [
+        {
+          model: User,
+          as: 'formateur', // Assuming the alias for the formateur association is 'formateur'
+          attributes: ['id', 'nom', 'prenom'], // Fetch only necessary fields
+        },
+      ],
+      order: [['dateDebut', 'ASC']], // Order sessions by start date
+    });
+
+    // Render the EJS template with the list of formations
+    res.render('admin/gestion_formation_en_attente', { user: req.user, formations });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des sessions de formation :', error);
+    req.flash('error', 'Une erreur est survenue lors du chargement des sessions de formation.');
+    res.redirect('/admin/dashboard');
+  }
+};
+
+exports.listerSessionsEnCours = async (req, res) => {
+  try {
+    // Fetch all sessions with their associated formateurs
+    const formations = await SessionFormation.findAll({
+      where: {
+        status: 'en_cours'
+      },
+     
+      include: [
+        {
+          model: User,
+          as: 'formateur', // Assuming the alias for the formateur association is 'formateur'
+          attributes: ['id', 'nom', 'prenom'], // Fetch only necessary fields
+        },
+      ],
+      order: [['dateDebut', 'ASC']], // Order sessions by start date
+    });
+
+    // Render the EJS template with the list of formations
+    res.render('admin/gestion_formation_en_cours', { user: req.user, formations });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des sessions de formation :', error);
+    req.flash('error', 'Une erreur est survenue lors du chargement des sessions de formation.');
+    res.redirect('/admin/dashboard');
+  }
+};
+
+
+
+exports.listerSessionsTerminees = async (req, res) => {
+  try {
+    // Fetch all sessions with their associated formateurs
+    const formations = await SessionFormation.findAll({
+      where: {
+        status: 'terminee'
+      },
+     
+      include: [
+        {
+          model: User,
+          as: 'formateur', // Assuming the alias for the formateur association is 'formateur'
+          attributes: ['id', 'nom', 'prenom'], // Fetch only necessary fields
+        },
+      ],
+      order: [['dateDebut', 'ASC']], // Order sessions by start date
+    });
+
+    // Render the EJS template with the list of formations
+    res.render('admin/gestion_formation_terminee', { user: req.user, formations });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des sessions de formation :', error);
+    req.flash('error', 'Une erreur est survenue lors du chargement des sessions de formation.');
+    res.redirect('/admin/dashboard');
+  }
+};
+
+
+
+exports.afficherDetailsFormationEnAttente = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+
+    // Fetch the session details
+    const session = await SessionFormation.findByPk(sessionId, {
+      include: [
+        {
+          model: User,
+          as: 'formateur',
+          attributes: ['id', 'nom', 'prenom'],
+        },
+      ],
+    });
+
+    if (!session) {
+      req.flash('error', 'Session introuvable.');
+      return res.redirect('/admin/suivi-formation');
+    }
+
+    // Fetch videoconferences related to the session with SuivieCours status
+    const videoconferences = await Videoconference.findAll({
+      where: { idSession: sessionId },
+      order: [['dateHeure', 'ASC']],
+      
+    });
+
+    
+          // Fetch number of subscribed students in the session
+      const inscriptions = await Inscription.findAll({
+        where: {
+          idSession: sessionId,
+          status: 'active' // Combine conditions in a single object
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'nom', 'prenom'],
+          },
+        ],
+        order: [['createdAt', 'ASC']],
+      });
+
+
+      // Store the number of subscribed students
+
+        const numberOfSubscribedStudents = inscriptions.length;
+
+
+    // Render the template
+    res.render('admin/get_session_en_attente', { session, videoconferences, numberOfSubscribedStudents });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails de la session :', error);
+    req.flash('error', 'Une erreur est survenue lors du chargement des détails de la session.');
+    res.redirect('/admin/suivi-formation');
+  }
+};
+
+
+exports.afficherDetailsFormationEnCours = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+
+    // Fetch the session details
+    const session = await SessionFormation.findByPk(sessionId, {
+      include: [
+        {
+          model: User,
+          as: 'formateur',
+          attributes: ['id', 'nom', 'prenom'],
+        },
+      ],
+    });
+
+    if (!session) {
+      req.flash('error', 'Session introuvable.');
+      return res.redirect('/admin/suivi-formation');
+    }
+
+    // Fetch videoconferences related to the session with SuivieCours status
+    const videoconferences = await Videoconference.findAll({
+      where: { idSession: sessionId },
+      order: [['dateHeure', 'ASC']],
+      
+    });
+
+
+    // Fetch number of subscribed students in the session
+      const inscriptions = await Inscription.findAll({
+        where: {
+          idSession: sessionId,
+          status: 'active' // Combine conditions in a single object
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'nom', 'prenom'],
+          },
+        ],
+        order: [['createdAt', 'ASC']],
+      });
+    
+
+
+      // Store the number of subscribed students
+
+      const numberOfSubscribedStudents = inscriptions.length;
+
+
+    // Render the template
+    res.render('admin/get_session_en_cours', { session, videoconferences, numberOfSubscribedStudents });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails de la session :', error);
+    req.flash('error', 'Une erreur est survenue lors du chargement des détails de la session.');
+    res.redirect('/admin/suivi-formation');
+  }
+};
+
+
+
+
+
+
+
+exports.modifierSessionEnAttente = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+    const { titre, description, dateDebut, dateFin, montant, nombre_place } = req.body;
+
+    // Validate input
+    if (!titre || !description || !dateDebut || !dateFin || !montant || !nombre_place) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/suivi-formation_en_attente/${sessionId}`);
+    }
+
+    // Update the session in the database
+    await SessionFormation.update(
+      { titre, description, dateDebut, dateFin, montant, nombre_place },
+      { where: { id: sessionId } }
+    );
+
+    req.flash('success', 'La session a été modifiée avec succès.');
+    res.redirect(`/admin/suivi-formation_en_attente/${sessionId}`);
+  } catch (error) {
+    console.error('Erreur lors de la modification de la session :', error);
+    req.flash('error', 'Une erreur est survenue lors de la modification de la session.');
+    res.redirect(`/admin/suivi-formation_en_attente/${sessionId}`);
+  }
+};
+
+exports.modifierVisioEnAttente = async (req, res) => {
+  try {
+    const visioId = req.params.id; // Get the videoconference ID
+    const sessionId = req.params.sessionId; // Get the session ID (if applicable)
+    const { titre, description, dateHeure, lien } = req.body;
+
+    // Debugging logs
+    console.log('visioId:', visioId);
+    console.log('sessionId:', sessionId);
+    console.log('Request Body:', req.body);
+
+    // Validate required fields
+    if (!visioId || !titre || !description || !dateHeure) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/suivi-formation_en_attente/${sessionId || ''}`);
+    }
+
+    // Update the videoconference in the database
+    await Videoconference.update(
+      { titre, description, dateHeure, lien },
+      { where: { id: visioId } }
+    );
+
+    req.flash('success', 'La vidéoconférence a été modifiée avec succès.');
+    res.redirect(`/admin/suivi-formation_en_attente/${req.params.sessionId || ''}`);
+  } catch (error) {
+    console.error('Erreur lors de la modification de la vidéoconférence :', error);
+    req.flash('error', 'Une erreur est survenue lors de la modification de la vidéoconférence.');
+    res.redirect(`/admin/suivi-formation_en_attente/${req.params.sessionId || ''}`);
+  }
+};
+
+
+
+exports.ajouterVisioEnAttente = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+    const { titre, description, dateHeure, lien } = req.body;
+
+    // Validate required fields
+    if (!titre || !description || !dateHeure || !lien) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/videoconferences/ajouter/${sessionId}`);
+    }
+
+    // Validate date is in the future
+    if (new Date(dateHeure) < new Date()) {
+      req.flash('error', 'La date et heure doivent être dans le futur.');
+      return res.redirect(`/admin/videoconferences/ajouter/${sessionId}`);
+    }
+
+    // Save the videoconference to the database
+    await Videoconference.create({
+      titre,
+      description,
+      dateHeure,
+      lien,
+      idSession: sessionId
+    });
+
+    req.flash('success', 'La vidéoconférence a été ajoutée avec succès.');
+    res.redirect(`/admin/suivi-formation_en_attente/${sessionId}`);
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de la vidéoconférence :', error);
+    req.flash('error', 'Une erreur est survenue lors de l\'ajout de la vidéoconférence.');
+    res.redirect(`/admin/videoconferences/ajouter/${req.params.id}`);
+  }
+};
+
+
+
+///////////////////////////////////////
+
+
+exports.modifierSessionEnCours = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+    const { titre, description, dateDebut, dateFin, montant, nombre_place } = req.body;
+
+    // Validate input
+    if (!titre || !description || !dateDebut || !dateFin || !montant || !nombre_place) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/suivi-formation_en_cours/${sessionId}`);
+    }
+
+    // Update the session in the database
+    await SessionFormation.update(
+      { titre, description, dateDebut, dateFin, montant, nombre_place },
+      { where: { id: sessionId } }
+    );
+
+    req.flash('success', 'La session a été modifiée avec succès.');
+    res.redirect(`/admin/suivi-formation_en_cours/${sessionId}`);
+  } catch (error) {
+    console.error('Erreur lors de la modification de la session :', error);
+    req.flash('error', 'Une erreur est survenue lors de la modification de la session.');
+    res.redirect(`/admin/suivi-formation_en_cours/${sessionId}`);
+  }
+};
+
+exports.modifierVisioEnCours = async (req, res) => {
+  try {
+    const visioId = req.params.id; // Get the videoconference ID
+    const sessionId = req.params.sessionId; // Get the session ID (if applicable)
+    const { titre, description, dateHeure, lien } = req.body;
+
+    // Debugging logs
+    console.log('visioId:', visioId);
+    console.log('sessionId:', sessionId);
+    console.log('Request Body:', req.body);
+
+    // Validate required fields
+    if (!visioId || !titre || !description || !dateHeure) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/suivi-formation_en_cours/${sessionId || ''}`);
+    }
+
+    // Update the videoconference in the database
+    await Videoconference.update(
+      { titre, description, dateHeure, lien },
+      { where: { id: visioId } }
+    );
+
+    req.flash('success', 'La vidéoconférence a été modifiée avec succès.');
+    res.redirect(`/admin/suivi-formation_en_cours/${req.params.sessionId || ''}`);
+  } catch (error) {
+    console.error('Erreur lors de la modification de la vidéoconférence :', error);
+    req.flash('error', 'Une erreur est survenue lors de la modification de la vidéoconférence.');
+    res.redirect(`/admin/suivi-formation_en_cours/${req.params.sessionId || ''}`);
+  }
+};
+
+
+
+exports.ajouterVisioEnCours = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+    const { titre, description, dateHeure, lien } = req.body;
+
+    // Validate required fields
+    if (!titre || !description || !dateHeure || !lien) {
+      req.flash('error', 'Tous les champs sont obligatoires.');
+      return res.redirect(`/admin/videoconferences/ajouter/${sessionId}`);
+    }
+
+    // Validate date is in the future
+    if (new Date(dateHeure) < new Date()) {
+      req.flash('error', 'La date et heure doivent être dans le futur.');
+      return res.redirect(`/admin/videoconferences/ajouter/${sessionId}`);
+    }
+
+    // Save the videoconference to the database
+    await Videoconference.create({
+      titre,
+      description,
+      dateHeure,
+      lien,
+      idSession: sessionId
+    });
+
+    req.flash('success', 'La vidéoconférence a été ajoutée avec succès.');
+    res.redirect(`/admin/suivi-formation_en_cours/${sessionId}`);
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de la vidéoconférence :', error);
+    req.flash('error', 'Une erreur est survenue lors de l\'ajout de la vidéoconférence.');
+    res.redirect(`/admin/videoconferences/ajouter/${req.params.id}`);
+  }
+};
+
+
+
+
+
+exports.afficherDetailsFormationTerminee = async (req, res) => {
+  try {
+    const sessionId = req.params.id;
+
+    // Fetch the session details
+    const session = await SessionFormation.findByPk(sessionId, {
+      include: [
+        {
+          model: User,
+          as: 'formateur',
+          attributes: ['id', 'nom', 'prenom'],
+        },
+      ],
+    });
+
+    if (!session) {
+      req.flash('error', 'Session introuvable.');
+      return res.redirect('/admin/suivi-formation_terminee');
+    }
+
+    // Fetch videoconferences related to the session with SuivieCours status
+    const videoconferences = await Videoconference.findAll({
+      where: { idSession: sessionId },
+      order: [['dateHeure', 'ASC']],
+      
+    });
+
+
+    // Fetch number of subscribed students in the session
+      const inscriptions = await Inscription.findAll({
+        where: {
+          idSession: sessionId,
+          status: 'active' // Combine conditions in a single object
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'nom', 'prenom'],
+          },
+        ],
+        order: [['createdAt', 'ASC']],
+      });
+    
+
+
+      // Store the number of subscribed students
+
+      const numberOfSubscribedStudents = inscriptions.length;
+
+
+    // Render the template
+    res.render('admin/get_session_terminee', { session, videoconferences, numberOfSubscribedStudents });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails de la session :', error);
+    req.flash('error', 'Une erreur est survenue lors du chargement des détails de la session.');
+    res.redirect('/admin/suivi-formation_terminee');
   }
 };
